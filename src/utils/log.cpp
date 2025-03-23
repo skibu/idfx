@@ -19,7 +19,7 @@ std::string idfx::threadId() {
 
 std::string idfx::shortThreadId() {
     const int MAX_CHARS = 8;
-    std::string id = thread_id();
+    std::string id = threadId();
     if (id.size() < MAX_CHARS) {
         return id;
     } else {
