@@ -24,7 +24,7 @@ std::string shortThreadId();
 }  // namespace stdx
 
 /* Provides the thread name as the TAG used for logging */
-#define TAG_FOR_LOGGING (std::string("t=") + utils::short_thread_id()).c_str()
+#define TAG_FOR_LOGGING (std::string("t=") + utils::shortThreadId()).c_str()
 
 /* Verbose macro. Uses ESP_LOGV() but adds additional info */
 #define VERBOSE(format, ...) ESP_LOGV(TAG_FOR_LOGGING, "%s() %s:%d " format,              \
