@@ -1,0 +1,4 @@
+version: "0.0.1"
+description: "C++ component library for esp-idf projects"
+url: "https://github.com/skibu/idfx"
+license: "MIT"
