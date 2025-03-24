@@ -1,3 +1,6 @@
+# compilation artifacts
+dist/
+
 # Prerequisites
 *.d
 

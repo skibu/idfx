@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "utils/time.hpp"
+#include "idfx/utils/time.hpp"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/FreeRTOSConfig.h>
@@ -11,7 +11,7 @@
 #include <chrono>
 #include <thread>
 
-#include "utils/log.hpp"
+#include "idfx/utils/log.hpp"
 
 
 using namespace std::chrono_literals;
@@ -23,7 +23,7 @@ void idfx::sleep(const std::chrono::duration<int, std::micro>& microsecs) {
     if (microsecs.count() > (portTICK_PERIOD_MS * 1000)) {
         // Longer delay so use this_thread::sleep_for() which yields control to other threads
         VERBOSE(
-            "Sleeping for more than 1 tick period (portTICK_PERIOD_MS=%dmsec or %dusec) "
+            "Sleeping for more than 1 tick period (portTICK_PERIOD_MS=%lu msec or %lu usec) "
             "so using std::this_thread::sleep_for() to yield control to other tasks",
             portTICK_PERIOD_MS, portTICK_PERIOD_MS * 1000);
         DEBUGGING(initial_time_microsecs = esp_timer_get_time());

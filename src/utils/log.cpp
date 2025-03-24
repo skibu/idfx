@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "log.hpp"
+#include "idfx/utils/log.hpp"
 
 #include "freertos/FreeRTOS.h" // FIXME needed?
 #include "freertos/task.h" // FIXME needed?

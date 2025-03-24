@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <filesystem>
 
-namespace stdx {
+namespace idfx {
 
 /* Returns the current thread's ID as a string */
 std::string threadId();
@@ -21,10 +21,10 @@ std::string threadId();
 /* Returns the current thread's ID as a string, but only the last 8 characters */
 std::string shortThreadId();
 
-}  // namespace stdx
+}  // namespace idfx
 
 /* Provides the thread name as the TAG used for logging */
-#define TAG_FOR_LOGGING (std::string("t=") + utils::shortThreadId()).c_str()
+#define TAG_FOR_LOGGING (std::string("t=") + idfx::shortThreadId()).c_str()
 
 /* Verbose macro. Uses ESP_LOGV() but adds additional info */
 #define VERBOSE(format, ...) ESP_LOGV(TAG_FOR_LOGGING, "%s() %s:%d " format,              \
@@ -41,7 +41,7 @@ line number, and function name */
 
 /* For executing code, like timing code, only if in debug mode */
 #define DEBUGGING(code)                                           \
-    if (LOG_LOCAL_LEVEL >= ESP_LOG_GET_LEVEL(ESP_LOG_DEBUG)) do { \
+    if (LOG_LOCAL_LEVEL >= ESP_LOG_DEBUG) do {                    \
             code;                                                 \
     } while (0)
 
