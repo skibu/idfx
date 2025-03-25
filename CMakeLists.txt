@@ -5,4 +5,4 @@
 # to find the include files.
 idf_component_register(SRC_DIRS "src/utils" "src/hardware" "src/display"
                     INCLUDE_DIRS "include"
-                    REQUIRES "esp-idf-cxx" "esp_driver_ledc")
+                    REQUIRES "esp-idf-cxx" "esp_driver_ledc" "lvgl")
