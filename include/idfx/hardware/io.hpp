@@ -30,14 +30,14 @@ class OutputBit {
      * @param name The name of the output bit (for logging).
      * @param ioExtender_ Pointer to an IOExtender object, if using one.
      */
-    OutputBit(GPIONum num, std::string bit_name, IOExtender* ioExtender_ = nullptr);
+    OutputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_ = nullptr);
 
     /**
      * Constructor for when don't want to specify a name for the output bit.
      * @param num The GPIO pin number.
      * @param ioExtender_ Pointer to an IOExtender object, if using one.
      */
-    OutputBit(GPIONum num, IOExtender* ioExtender_ = nullptr);
+    OutputBit(idf::GPIONum num, IOExtender* ioExtender_ = nullptr);
 
     ~OutputBit();
 
@@ -67,8 +67,8 @@ class OutputBit {
      * Sets the output bit to GPIOLevel::HIGH or GPIOLevel::LOW
      * @param level The desired GPIO level (HIGH or LOW).
      */
-    void set(GPIOLevel level) const {
-        if (level == GPIOLevel::HIGH) {
+    void set(idf::GPIOLevel level) const {
+        if (level == idf::GPIOLevel::HIGH) {
             setOn();
         } else {
             setOff();
@@ -82,9 +82,9 @@ class OutputBit {
     bool get() const;
 
    private:
-    GPIONum pin_;
+    idf::GPIONum pin_;
     std::string bit_name_;
-    GPIO_Output* gpioOutput_ = nullptr;  // Managed by the destructor
+    idf::GPIO_Output* gpioOutput_ = nullptr;  // Managed by the destructor
     IOExtender* ioExtender_ = nullptr;
 };
 
@@ -102,14 +102,14 @@ class InputBit {
      * @param name The name of the output bit (for logging).
      * @param ioExtender_ Pointer to an IOExtender object, if using one.
      */
-    InputBit(GPIONum num, std::string bit_name, IOExtender* ioExtender_ = nullptr);
+    InputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_ = nullptr);
 
     /**
      * Constructor for when don't want to specify a name for the output bit.
      * @param num The GPIO pin number.
      * @param ioExtender_ Pointer to an IOExtender object, if using one.
      */
-    InputBit(GPIONum num, IOExtender* ioExtender_ = nullptr);
+    InputBit(idf::GPIONum num, IOExtender* ioExtender_ = nullptr);
 
     ~InputBit();
 
@@ -120,9 +120,9 @@ class InputBit {
     bool get() const;
 
    private:
-    GPIONum pin_;
+    idf::GPIONum pin_;
     std::string bit_name_;
-    GPIOInput* gpioInput_ = nullptr;  // Managed by the destructor
+    idf::GPIOInput* gpioInput_ = nullptr;  // Managed by the destructor
     IOExtender* ioExtender_;
 };
 

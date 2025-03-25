@@ -24,7 +24,7 @@ using namespace idfx;
 
 /********************************** OutputBit ***************************/
 
-OutputBit::OutputBit(GPIONum num, std::string bit_name, IOExtender* ioExtender_)
+OutputBit::OutputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_)
     : pin_(num), bit_name_(bit_name), ioExtender_(ioExtender_) {
     // Configure the pin as an output
     VERBOSE("Creating OutputBit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
@@ -32,12 +32,12 @@ OutputBit::OutputBit(GPIONum num, std::string bit_name, IOExtender* ioExtender_)
         ioExtender_->configAsOutput(pin_.get_value());
     } else {
         DEBUG("Creating GPIO_Output for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-        gpioOutput_ = new GPIO_Output(pin_);
+        gpioOutput_ = new idf::GPIO_Output(pin_);
     }
 }
 
 // This constructor is just a convenience for when you don't want to specify a name
-OutputBit::OutputBit(GPIONum num, IOExtender* ioExtender_) : OutputBit(num, "", ioExtender_) {
+OutputBit::OutputBit(idf::GPIONum num, IOExtender* ioExtender_) : OutputBit(num, "", ioExtender_) {
     // All work done in main constructor
 }
 
@@ -95,7 +95,7 @@ void OutputBit::setOff() const {
 
 /********************************** InputBit ***************************/
 
-InputBit::InputBit(GPIONum num, std::string bit_name, IOExtender* ioExtender_)
+InputBit::InputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_)
     : pin_(num), bit_name_(bit_name), ioExtender_(ioExtender_) {
     VERBOSE("Creating InputBit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
 
@@ -104,12 +104,12 @@ InputBit::InputBit(GPIONum num, std::string bit_name, IOExtender* ioExtender_)
         ioExtender_->configAsInput(pin_.get_value());
     } else {
         DEBUG("Creating GPIOInput for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-        gpioInput_ = new GPIOInput(pin_);
+        gpioInput_ = new idf::GPIOInput(pin_);
     }
 }
 
 // This constructor is just a convenience for when you don't want to specify a name
-InputBit::InputBit(GPIONum num, IOExtender* ioExtender_) : InputBit(num, "", ioExtender_) {
+InputBit::InputBit(idf::GPIONum num, IOExtender* ioExtender_) : InputBit(num, "", ioExtender_) {
     // All work done in main constructor
 }
 
@@ -123,7 +123,7 @@ InputBit::~InputBit() {
 bool InputBit::get() const {
     if (gpioInput_) {
         DEBUG("Getting GPIO level for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-        return gpioInput_->get_level() == GPIOLevel::HIGH;
+        return gpioInput_->get_level() == idf::GPIOLevel::HIGH;
     } else if (ioExtender_) {
         return ioExtender_->getBit(pin_.get_value()) == 1;
     } else {
@@ -138,7 +138,7 @@ bool InputBit::get() const {
 static auto timers_in_use = std::map<ledc_timer_t, PWMTimer*>();
 
 /* static */
-PWMTimer* PWMTimer::get_available_timer(const uint32_t freq_hz) {
+PWMTimer* PWMTimer::getAvailableTimer(const uint32_t freq_hz) {
     for (int num = LEDC_TIMER_0; num < LEDC_TIMER_MAX; ++num) {
         ledc_timer_t timer_num = static_cast<ledc_timer_t>(num);
         if (timers_in_use.find(timer_num) == timers_in_use.end()) {
@@ -159,7 +159,7 @@ PWMTimer* PWMTimer::get_available_timer(const uint32_t freq_hz) {
 }
 
 /* static */
-PWMTimer* PWMTimer::get_timer(const ledc_timer_t timer_num, const uint32_t freq_hz) {
+PWMTimer* PWMTimer::getTimer(const ledc_timer_t timer_num, const uint32_t freq_hz) {
     DEBUG("Getting PWMTimer for timer number %ld", timer_num);
 
     auto found_timer = timers_in_use.find(timer_num);
@@ -177,7 +177,7 @@ PWMTimer* PWMTimer::get_timer(const ledc_timer_t timer_num, const uint32_t freq_
     }
 }
 
-void PWMTimer::done_with_timer() {
+void PWMTimer::doneWithTimer() {
     DEBUG("Done with reference to PWMTimer for timer number %ld", timer_num_);
 
     // Decrement reference count. If no more references to it then destruct the timer
@@ -234,7 +234,7 @@ PWMTimer::~PWMTimer() {
     ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 }
 
-void idf::PWMTimer::setFrequency(const uint32_t freq_hz) {
+void PWMTimer::setFrequency(const uint32_t freq_hz) {
     ledc_timer_config_t ledc_timer = {
         .speed_mode = speed_mode_,
         .duty_resolution = LEDC_TIMER_12_BIT,  // Duty can be 0 to 2^12=4096
@@ -256,12 +256,12 @@ static auto channels_used = std::set<ledc_channel_t>();
 OutputPWM::OutputPWM(gpio_num_t gpio_num) : OutputPWM(gpio_num, get_available_channel()) {}
 
 OutputPWM::OutputPWM(gpio_num_t gpio_num, ledc_channel_t channel)
-    : timer_ptr_(PWMTimer::get_available_timer()),
+    : timer_ptr_(PWMTimer::getAvailableTimer()),
       gpio_num_(gpio_num),
       channel_(channel),
-      speed_mode_(timer_ptr_->get_speed_mode()) {
+      speed_mode_(timer_ptr_->getSpeedMode()) {
     INFO("Constructing OutputPWM for gpio_num=%d timer=%ld channel=%d", gpio_num_,
-         timer_ptr_->get_timer(), channel_);
+         timer_ptr_->getTimer(), channel_);
 
     // Keep track that this channel is being used
     channels_used.insert(channel);
@@ -271,7 +271,7 @@ OutputPWM::OutputPWM(gpio_num_t gpio_num, ledc_channel_t channel)
                                           .speed_mode = speed_mode_,
                                           .channel = channel_,
                                           .intr_type = LEDC_INTR_DISABLE,
-                                          .timer_sel = timer_ptr_->get_timer(),
+                                          .timer_sel = timer_ptr_->getTimer(),
                                           .duty = 0,  // Set duty to 0% at initialization
                                           .hpoint = 0,
                                           .sleep_mode = LEDC_SLEEP_MODE_NO_ALIVE_NO_PD,
@@ -283,7 +283,7 @@ OutputPWM::~OutputPWM() {
     INFO("Deleting OutputPWM for gpio_num=%d and channel=%d", gpio_num_, channel_);
 
     // Release the reference to the timer
-    timer_ptr_->done_with_timer();
+    timer_ptr_->doneWithTimer();
 
     // Oddly, there is an ESP-IDF bug where GPIO LEDC bits are reserved automatically,
     // but never released. Therefore releasing it manually. Unfortunately have to

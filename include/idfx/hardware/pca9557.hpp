@@ -20,7 +20,7 @@ class PCA9557 : public IOExtender {
    public:
     /* Constructs the PCA9557 object and initializes it so that polarity is set to 0x00 instead
        of the hardware default of 0xF0 */
-    PCA9557(I2CMaster &master, I2CAddress address);
+    PCA9557(idf::I2CMaster &master, idf::I2CAddress address);
 
     ~PCA9557();
 
@@ -37,8 +37,8 @@ class PCA9557 : public IOExtender {
     uint8_t getBit(int io_bit);
 
    protected:
-    I2CMaster &master;
-    I2CAddress address;
+    idf::I2CMaster &master_;
+    idf::I2CAddress address_;
 
     unsigned char CURRENT_VALUES_REGISTER = 0x00;
     unsigned char OUTPUT_PORT_REGISTER = 0x01;
