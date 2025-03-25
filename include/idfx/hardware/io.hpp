@@ -11,7 +11,7 @@
 #include "driver/ledc.h"
 #include "esp_err.h"
 #include "gpio_cxx.hpp"
-#include "hardware/ioExtender.hpp"
+#include "idfx/hardware/ioExtender.hpp"
 #include "idfx/utils/log.hpp"
 
 namespace idfx {

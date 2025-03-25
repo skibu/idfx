@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
- #include "hardware/interrupts.hpp"
+#include "idfx/hardware/interrupts.hpp"
 
 #include <rom/ets_sys.h>
 
 #include <map>
 
 #include "esp_intr_alloc.h"
-#include "interrupts.hpp"
 #include "idfx/utils/log.hpp"
 
 // Structure for data in the queue. Identifies the GPIO bit and the ISR function to call.
