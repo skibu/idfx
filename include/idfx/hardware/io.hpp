@@ -10,15 +10,15 @@
 
 #include "driver/ledc.h"
 #include "esp_err.h"
-#include "gpio_cxx.hpp"
-#include "idfx/hardware/ioExtender.hpp"
+#include "esp-idf-cxx/gpio_cxx.hpp"
+#include "idfx/hardware/ioExpander.hpp"
 #include "idfx/utils/log.hpp"
 
 namespace idfx {
 
 /**
  * OutputBit class represents a GPIO pin configured as an output. Works for both pins on the
- * ESP32 and pins on an IO extender (like PCA9557). Provides methods to set and get the pin state.
+ * ESP32 and pins on an IO expander (like PCA9557). Provides methods to set and get the pin state.
  */
 class OutputBit {
    public:
@@ -28,16 +28,16 @@ class OutputBit {
      * the constructor.
      * @param num The GPIO pin number.
      * @param name The name of the output bit (for logging).
-     * @param ioExtender_ Pointer to an IOExtender object, if using one.
+     * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    OutputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_ = nullptr);
+    OutputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ = nullptr);
 
     /**
      * Constructor for when don't want to specify a name for the output bit.
      * @param num The GPIO pin number.
-     * @param ioExtender_ Pointer to an IOExtender object, if using one.
+     * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    OutputBit(idf::GPIONum num, IOExtender* ioExtender_ = nullptr);
+    OutputBit(GPIONum num, IOExpander* io_expander_ = nullptr);
 
     ~OutputBit();
 
@@ -67,8 +67,8 @@ class OutputBit {
      * Sets the output bit to GPIOLevel::HIGH or GPIOLevel::LOW
      * @param level The desired GPIO level (HIGH or LOW).
      */
-    void set(idf::GPIOLevel level) const {
-        if (level == idf::GPIOLevel::HIGH) {
+    void set(GPIOLevel level) const {
+        if (level == GPIOLevel::HIGH) {
             setOn();
         } else {
             setOff();
@@ -82,15 +82,15 @@ class OutputBit {
     bool get() const;
 
    private:
-    idf::GPIONum pin_;
-    std::string bit_name_;
-    idf::GPIO_Output* gpioOutput_ = nullptr;  // Managed by the destructor
-    IOExtender* ioExtender_ = nullptr;
+    const GPIONum pin_;
+    const std::string bit_name_;
+    const GPIO_Output* gpio_output_ptr_;
+    const IOExpander* io_expander_ptr_;
 };
 
 /**
  * InputBit class represents a GPIO pin configured as an input. Works for both pins on the
- * ESP32 and pins on an IO extender (like PCA9557). Provides methods to get the pin state.
+ * ESP32 and pins on an IO expander (like PCA9557). Provides methods to get the pin state.
  */
 class InputBit {
    public:
@@ -100,16 +100,16 @@ class InputBit {
      * the constructor.
      * @param num The GPIO pin number.
      * @param name The name of the output bit (for logging).
-     * @param ioExtender_ Pointer to an IOExtender object, if using one.
+     * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    InputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_ = nullptr);
+    InputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ = nullptr);
 
     /**
      * Constructor for when don't want to specify a name for the output bit.
      * @param num The GPIO pin number.
-     * @param ioExtender_ Pointer to an IOExtender object, if using one.
+     * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    InputBit(idf::GPIONum num, IOExtender* ioExtender_ = nullptr);
+    InputBit(GPIONum num, IOExpander* io_expander_ = nullptr);
 
     ~InputBit();
 
@@ -120,10 +120,10 @@ class InputBit {
     bool get() const;
 
    private:
-    idf::GPIONum pin_;
-    std::string bit_name_;
-    idf::GPIOInput* gpioInput_ = nullptr;  // Managed by the destructor
-    IOExtender* ioExtender_;
+    const GPIONum pin_;
+    const std::string bit_name_;
+    const GPIOInput* gpioInput_;
+    const IOExpander* io_expander_ptr_;
 };
 
 /**
@@ -200,7 +200,7 @@ class PWMTimer {
 
     const ledc_timer_t timer_num_;
     const ledc_mode_t speed_mode_;
-    uint32_t freq_hz_;
+    const uint32_t freq_hz_;
     uint32_t num_references_;
 };
 

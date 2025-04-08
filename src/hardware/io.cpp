@@ -14,7 +14,7 @@
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "esp_err.h"
-#include "gpio_cxx.hpp"
+#include "esp-idf-cxx/gpio_cxx.hpp"
 #include "idfx/utils/log.hpp"
 
 // So that don't get warnings about the LEDC structures not being fully specified
@@ -24,92 +24,92 @@ using namespace idfx;
 
 /********************************** OutputBit ***************************/
 
-OutputBit::OutputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_)
-    : pin_(num), bit_name_(bit_name), ioExtender_(ioExtender_) {
+OutputBit::OutputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ptr)
+    : pin_(num), bit_name_(bit_name), io_expander_ptr_(io_expander_ptr) {
     // Configure the pin as an output
     VERBOSE("Creating OutputBit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-    if (ioExtender_) {
-        ioExtender_->configAsOutput(pin_.get_value());
+    if (io_expander_ptr_) {
+        io_expander_ptr_->configAsOutput(pin_.get_value());
     } else {
         DEBUG("Creating GPIO_Output for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-        gpioOutput_ = new idf::GPIO_Output(pin_);
+        gpio_output_ptr_ = new GPIO_Output(pin_);
     }
 }
 
 // This constructor is just a convenience for when you don't want to specify a name
-OutputBit::OutputBit(idf::GPIONum num, IOExtender* ioExtender_) : OutputBit(num, "", ioExtender_) {
+OutputBit::OutputBit(GPIONum num, IOExpander* io_expander_ptr_) : OutputBit(num, "", io_expander_ptr_) {
     // All work done in main constructor
 }
 
 bool OutputBit::get() const {
-    if (gpioOutput_) {
+    if (gpio_output_ptr_) {
         // The GPIO_Output class doesn't have a way of reading the level directly,
         // so we need to use the underlying GPIO API to get the level.
         int level = gpio_get_level(pin_.get_value<gpio_num_t>());
         DEBUG("GPIO %d (%s) level is %d", pin_.get_value(), bit_name_.c_str(), level);
         return level == 1;
-    } else if (ioExtender_) {
-        return ioExtender_->getBit(pin_.get_value()) == 1;
+    } else if (io_expander_ptr_) {
+        return io_expander_ptr_->getBit(pin_.get_value()) == 1;
     } else {
-        ERROR("No valid GPIO or IOExtender to read from for pin %d (%s)", pin_.get_value(),
+        ERROR("No valid GPIO or IOExpander to read from for pin %d (%s)", pin_.get_value(),
               bit_name_.c_str());
         return false;  // Default to false if we can't read the pin
     }
 }
 
 OutputBit::~OutputBit() {
-    if (gpioOutput_ != nullptr) {
-        delete gpioOutput_;
-        gpioOutput_ = nullptr;
+    if (gpio_output_ptr_ != nullptr) {
+        delete gpio_output_ptr_;
+        gpio_output_ptr_ = nullptr;
     }
 }
 
 void OutputBit::setOn() const {
     INFO("Setting GPIO %d (%s) to HIGH", pin_.get_value(), bit_name_.c_str());
 
-    // Set the GPIO or IOExtender bit to high
-    if (gpioOutput_) {
+    // Set the GPIO or IOExpander bit to high
+    if (gpio_output_ptr_) {
         DEBUG("Setting GPIO_Output for GPIO %d (%s) to HIGH", pin_.get_value(), bit_name_.c_str());
-        gpioOutput_->set_high();
-    } else if (ioExtender_) {
-        ioExtender_->setBit(pin_.get_value(), true);
+        gpio_output_ptr_->set_high();
+    } else if (io_expander_ptr_) {
+        io_expander_ptr_->setBit(pin_.get_value(), true);
     } else {
-        // else: do nothing, as we don't have a valid GPIO or IOExtender
-        ERROR("No valid GPIO or IOExtender to set for pin %d (%s)", pin_.get_value(),
+        // else: do nothing, as we don't have a valid GPIO or IOExpander
+        ERROR("No valid GPIO or IOExpander to set for pin %d (%s)", pin_.get_value(),
               bit_name_.c_str());
     }
 }
 
 void OutputBit::setOff() const {
-    if (gpioOutput_) {
+    if (gpio_output_ptr_) {
         DEBUG("Setting GPIO_Output for GPIO %d (%s) to LOW", pin_.get_value(), bit_name_.c_str());
-        gpioOutput_->set_low();
-    } else if (ioExtender_) {
-        ioExtender_->setBit(pin_.get_value(), false);
+        gpio_output_ptr_->set_low();
+    } else if (io_expander_ptr_) {
+        io_expander_ptr_->setBit(pin_.get_value(), false);
     } else {
-        // else: do nothing, as we don't have a valid GPIO or IOExtender
-        ERROR("No valid GPIO or IOExtender to set for pin %d (%s)", pin_.get_value(),
+        // else: do nothing, as we don't have a valid GPIO or IOExpander
+        ERROR("No valid GPIO or IOExpander to set for pin %d (%s)", pin_.get_value(),
               bit_name_.c_str());
     }
 }
 
 /********************************** InputBit ***************************/
 
-InputBit::InputBit(idf::GPIONum num, std::string bit_name, IOExtender* ioExtender_)
-    : pin_(num), bit_name_(bit_name), ioExtender_(ioExtender_) {
+InputBit::InputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ptr)
+    : pin_(num), bit_name_(bit_name), io_expander_ptr_(io_expander_ptr) {
     VERBOSE("Creating InputBit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
 
     // Configure the pin as an output
-    if (ioExtender_) {
-        ioExtender_->configAsInput(pin_.get_value());
+    if (io_expander_ptr_) {
+        io_expander_ptr_->configAsInput(pin_.get_value());
     } else {
         DEBUG("Creating GPIOInput for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-        gpioInput_ = new idf::GPIOInput(pin_);
+        gpioInput_ = new GPIOInput(pin_);
     }
 }
 
 // This constructor is just a convenience for when you don't want to specify a name
-InputBit::InputBit(idf::GPIONum num, IOExtender* ioExtender_) : InputBit(num, "", ioExtender_) {
+InputBit::InputBit(GPIONum num, IOExpander* io_expander_ptr_) : InputBit(num, "", io_expander_ptr_) {
     // All work done in main constructor
 }
 
@@ -123,11 +123,11 @@ InputBit::~InputBit() {
 bool InputBit::get() const {
     if (gpioInput_) {
         DEBUG("Getting GPIO level for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-        return gpioInput_->get_level() == idf::GPIOLevel::HIGH;
-    } else if (ioExtender_) {
-        return ioExtender_->getBit(pin_.get_value()) == 1;
+        return gpioInput_->get_level() == GPIOLevel::HIGH;
+    } else if (io_expander_ptr_) {
+        return io_expander_ptr_->getBit(pin_.get_value()) == 1;
     } else {
-        ERROR("No valid GPIO or IOExtender to read from for pin %d (%s)", pin_.get_value(),
+        ERROR("No valid GPIO or IOExpander to read from for pin %d (%s)", pin_.get_value(),
               bit_name_.c_str());
         return false;  // Default to false if we can't read the pin
     }
@@ -197,12 +197,12 @@ PWMTimer::PWMTimer(const ledc_timer_t timer_num, const uint32_t freq_hz)
     : timer_num_(std::clamp(timer_num, LEDC_TIMER_0, (ledc_timer_t)(LEDC_TIMER_MAX - 1))),
       // Oddly, for the ESP32S3 at least there is only low speed mode. High speed mode,
       // where harware is used and duty changes are glitch free, is simply not available.
-      speed_mode_(LEDC_LOW_SPEED_MODE) {
-    DEBUG("Constructing PWMTimer for timer_num=%d and freq_hz=%ld", timer_num_, freq_hz);
+      speed_mode_(LEDC_LOW_SPEED_MODE),
+      freq_hz_(freq_hz) {
+    DEBUG("Constructing PWMTimer for timer_num=%d and freq_hz=%ld", timer_num_, freq_hz_);
 
     // Initalize members. Remember that this one is in use by setting reference count to 1
     num_references_ = 1;
-    freq_hz_ = freq_hz;
 
     if (timer_num_ != timer_num) {
         WARN(
@@ -216,7 +216,7 @@ PWMTimer::PWMTimer(const ledc_timer_t timer_num, const uint32_t freq_hz)
         .speed_mode = speed_mode_,
         .duty_resolution = LEDC_TIMER_12_BIT,  // Duty can be 0 to 2^12=4096
         .timer_num = timer_num_,
-        .freq_hz = freq_hz,
+        .freq_hz = freq_hz_,
         .clk_cfg = LEDC_AUTO_CLK,
         .deconfigure = false};
     ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));

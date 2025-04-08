@@ -13,10 +13,12 @@
 #include "esp_intr_alloc.h"
 #include "idfx/utils/log.hpp"
 
+using namespace idfx;
+
 // Structure for data in the queue. Identifies the GPIO bit and the ISR function to call.
 typedef struct QueueData {
     int gpio_num;
-    idfx::isr_function_t individual_isr_for_bit;
+    isr_function_t individual_isr_for_bit;
 } queue_object_t;
 
 // Forward declaration
@@ -81,7 +83,7 @@ static void gpioIsrTaskFunction(void *arg) {
         if (xQueueReceive(gpio_event_queue_, &data, portMAX_DELAY)) {
             // Got from the queue a GPIO interrupt to handle
             int io_num = data.gpio_num;
-            idfx::isr_function_t isr_func = data.individual_isr_for_bit;
+            isr_function_t isr_func = data.individual_isr_for_bit;
             DEBUG("gpio_isr_task_function() Task handling interrupt. GPIO[%" PRIu32 "] intr, val: %d",
                        io_num, gpio_get_level(static_cast<gpio_num_t>(io_num)));
 
@@ -117,8 +119,8 @@ static void IRAM_ATTR gpioIsrHandler(void *arg) {
     xQueueSendFromISR(gpio_event_queue_, &queue_data, NULL);
 }
 
-idfx::GpioInterrupteHandler::GpioInterrupteHandler(idf::GPIONum gpio_num,
-                           idfx::isr_function_t individual_isr_for_bit,
+GpioInterrupteHandler::GpioInterrupteHandler(GPIONum gpio_num,
+                           isr_function_t individual_isr_for_bit,
                            gpio_int_type_t intr_type,
                            gpio_pullup_t pull_up_en,
                            gpio_pulldown_t pull_down_en) {

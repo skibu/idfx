@@ -16,7 +16,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
-#include "gpio_cxx.hpp"
+#include "esp-idf-cxx/gpio_cxx.hpp"
 
 namespace idfx {
 
@@ -46,7 +46,7 @@ class GpioInterrupteHandler {
      * @param pull_down_en Whether pull down resister should be enabled. A gpio_pulldown_t so
      * can be GPIO_PULLDOWN_DISABLE or GPIO_PULLDOWN_ENABLE. Default is GPIO_PULLDOWN_ENABLE
      */
-    GpioInterrupteHandler(idf::GPIONum gpio_num,
+    GpioInterrupteHandler(GPIONum gpio_num,
                           isr_function_t individual_isr_for_bit,
                           gpio_int_type_t intr_type = GPIO_INTR_POSEDGE,
                           gpio_pullup_t pull_up_en = GPIO_PULLUP_DISABLE,

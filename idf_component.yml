@@ -1,7 +1,6 @@
-version: 0.0.14
+version: 0.0.46
 description: C++ component library for esp-idf projects
 url: https://github.com/skibu/idfx
 license: MIT
 dependencies:
-  espressif/esp-idf-cxx: ^1.0.2-beta
   espressif/esp_lvgl_port: ^2.5.0
