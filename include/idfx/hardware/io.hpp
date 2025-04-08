@@ -122,7 +122,7 @@ class InputBit {
    private:
     const GPIONum pin_;
     const std::string bit_name_;
-    const GPIOInput* gpioInput_;
+    const GPIOInput* gpio_input_ptr_;
     const IOExpander* io_expander_ptr_;
 };
 

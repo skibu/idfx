@@ -30,6 +30,8 @@ OutputBit::OutputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_
     VERBOSE("Creating OutputBit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
     if (io_expander_ptr_) {
         io_expander_ptr_->configAsOutput(pin_.get_value());
+        // And null gpio_output_ptr_ since this is not always done by system
+        gpio_output_ptr_ = nullptr;
     } else {
         DEBUG("Creating GPIO_Output for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
         gpio_output_ptr_ = new GPIO_Output(pin_);
@@ -102,9 +104,11 @@ InputBit::InputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_pt
     // Configure the pin as an output
     if (io_expander_ptr_) {
         io_expander_ptr_->configAsInput(pin_.get_value());
+        // And null gpio_input_ptr_ since this is not always done by system
+        gpio_input_ptr_ = nullptr;
     } else {
         DEBUG("Creating GPIOInput for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
-        gpioInput_ = new GPIOInput(pin_);
+        gpio_input_ptr_ = new GPIOInput(pin_);
     }
 }
 
@@ -114,16 +118,16 @@ InputBit::InputBit(GPIONum num, IOExpander* io_expander_ptr_) : InputBit(num, ""
 }
 
 InputBit::~InputBit() {
-    if (gpioInput_ != nullptr) {
-        delete gpioInput_;
-        gpioInput_ = nullptr;
+    if (gpio_input_ptr_ != nullptr) {
+        delete gpio_input_ptr_;
+        gpio_input_ptr_ = nullptr;
     }
 }
 
 bool InputBit::get() const {
-    if (gpioInput_) {
+    if (gpio_input_ptr_) {
         DEBUG("Getting Input bit %d (%s)", pin_.get_value(), bit_name_.c_str());
-        return gpioInput_->get_level() == GPIOLevel::HIGH;
+        return gpio_input_ptr_->get_level() == GPIOLevel::HIGH;
     } else if (io_expander_ptr_) {
         return io_expander_ptr_->getBit(pin_.get_value()) == 1;
     } else {
