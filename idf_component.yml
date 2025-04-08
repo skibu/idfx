@@ -1,4 +1,4 @@
-version: 0.0.47
+version: 0.0.48
 description: C++ component library for esp-idf projects
 url: https://github.com/skibu/idfx
 license: MIT

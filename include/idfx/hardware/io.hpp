@@ -30,14 +30,14 @@ class OutputBit {
      * @param name The name of the output bit (for logging).
      * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    OutputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ = nullptr);
+    OutputBit(const GPIONum num, const std::string bit_name, const IOExpander* io_expander_ = nullptr);
 
     /**
      * Constructor for when don't want to specify a name for the output bit.
      * @param num The GPIO pin number.
      * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    OutputBit(GPIONum num, IOExpander* io_expander_ = nullptr);
+    OutputBit(const GPIONum num, const IOExpander* io_expander_ = nullptr);
 
     ~OutputBit();
 
@@ -102,14 +102,15 @@ class InputBit {
      * @param name The name of the output bit (for logging).
      * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    InputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ = nullptr);
+    InputBit(const GPIONum num, const std::string bit_name,
+             const IOExpander* io_expander_ = nullptr);
 
     /**
      * Constructor for when don't want to specify a name for the output bit.
      * @param num The GPIO pin number.
      * @param io_expander_ Pointer to an IOExpander object, if using one.
      */
-    InputBit(GPIONum num, IOExpander* io_expander_ = nullptr);
+    InputBit(const GPIONum num, const IOExpander* io_expander_ = nullptr);
 
     ~InputBit();
 

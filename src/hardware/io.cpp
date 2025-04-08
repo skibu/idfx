@@ -24,7 +24,8 @@ using namespace idfx;
 
 /********************************** OutputBit ***************************/
 
-OutputBit::OutputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ptr)
+OutputBit::OutputBit(const GPIONum num, const std::string bit_name,
+                     const IOExpander* io_expander_ptr)
     : pin_(num), bit_name_(bit_name), io_expander_ptr_(io_expander_ptr) {
     // Configure the pin as an output
     VERBOSE("Creating OutputBit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
@@ -39,7 +40,8 @@ OutputBit::OutputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_
 }
 
 // This constructor is just a convenience for when you don't want to specify a name
-OutputBit::OutputBit(GPIONum num, IOExpander* io_expander_ptr_) : OutputBit(num, "", io_expander_ptr_) {
+OutputBit::OutputBit(const GPIONum num, const IOExpander* io_expander_ptr_)
+    : OutputBit(num, "", io_expander_ptr_) {
     // All work done in main constructor
 }
 
@@ -97,7 +99,7 @@ void OutputBit::setOff() const {
 
 /********************************** InputBit ***************************/
 
-InputBit::InputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ptr)
+InputBit::InputBit(const GPIONum num, const std::string bit_name, const IOExpander* io_expander_ptr)
     : pin_(num), bit_name_(bit_name), io_expander_ptr_(io_expander_ptr) {
     VERBOSE("Creating Input bit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
 
@@ -113,7 +115,8 @@ InputBit::InputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_pt
 }
 
 // This constructor is just a convenience for when you don't want to specify a name
-InputBit::InputBit(GPIONum num, IOExpander* io_expander_ptr_) : InputBit(num, "", io_expander_ptr_) {
+InputBit::InputBit(const GPIONum num, const IOExpander* io_expander_ptr_)
+    : InputBit(num, "", io_expander_ptr_) {
     // All work done in main constructor
 }
 
