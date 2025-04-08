@@ -65,7 +65,7 @@ OutputBit::~OutputBit() {
 }
 
 void OutputBit::setOn() const {
-    INFO("Setting GPIO %d (%s) to HIGH", pin_.get_value(), bit_name_.c_str());
+    INFO("Setting Output bit %d (%s) to HIGH", pin_.get_value(), bit_name_.c_str());
 
     // Set the GPIO or IOExpander bit to high
     if (gpio_output_ptr_) {
@@ -82,7 +82,7 @@ void OutputBit::setOn() const {
 
 void OutputBit::setOff() const {
     if (gpio_output_ptr_) {
-        DEBUG("Setting GPIO_Output for GPIO %d (%s) to LOW", pin_.get_value(), bit_name_.c_str());
+        DEBUG("Setting Output bit %d (%s) to LOW", pin_.get_value(), bit_name_.c_str());
         gpio_output_ptr_->set_low();
     } else if (io_expander_ptr_) {
         io_expander_ptr_->setBit(pin_.get_value(), false);
@@ -97,7 +97,7 @@ void OutputBit::setOff() const {
 
 InputBit::InputBit(GPIONum num, std::string bit_name, IOExpander* io_expander_ptr)
     : pin_(num), bit_name_(bit_name), io_expander_ptr_(io_expander_ptr) {
-    VERBOSE("Creating InputBit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
+    VERBOSE("Creating Input bit for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
 
     // Configure the pin as an output
     if (io_expander_ptr_) {
@@ -122,7 +122,7 @@ InputBit::~InputBit() {
 
 bool InputBit::get() const {
     if (gpioInput_) {
-        DEBUG("Getting GPIO level for GPIO %d (%s)", pin_.get_value(), bit_name_.c_str());
+        DEBUG("Getting Input bit %d (%s)", pin_.get_value(), bit_name_.c_str());
         return gpioInput_->get_level() == GPIOLevel::HIGH;
     } else if (io_expander_ptr_) {
         return io_expander_ptr_->getBit(pin_.get_value()) == 1;
