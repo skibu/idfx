@@ -136,3 +136,29 @@ should be okay since likely always will have error logging enabled. */
     if (LOG_LOCAL_LEVEL >= ESP_LOG_GET_LEVEL(ESP_LOG_ERROR)) do { \
             ets_printf("E - " format "\n", ##__VA_ARGS__);        \
     } while (0)
+
+/* Assert macros. If expression is true then message is logged and application is aborted. */
+#define ASSERT(expr)                                    \
+    do {                                                \
+        if (!(expr)) {                                  \
+            ERROR("Asserted at expression: %s", #expr); \
+            abort();                                    \
+        }                                               \
+    } while (0)
+
+#define ASSERT_MSG(expr, msg)                                     \
+    do {                                                          \
+        if (!(expr)) {                                            \
+            ERROR("Asserted at expression: %s (%s)", #expr, msg); \
+            abort();                                              \
+        }                                                         \
+    } while (0)
+
+#define ASSERT_FORMAT_MSG(expr, format, ...)                                 \
+    do {                                                                     \
+        if (!(expr)) {                                                       \
+            ERROR("Asserted at expression: %s " format, #expr, __VA_ARGS__); \
+            abort();                                                         \
+        }                                                                    \
+    } while (0)
+    
