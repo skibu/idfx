@@ -137,7 +137,9 @@ should be okay since likely always will have error logging enabled. */
             ets_printf("E - " format "\n", ##__VA_ARGS__);        \
     } while (0)
 
-/* Assert macros. If expression is true then message is logged and application is aborted. */
+/* Assert macros. If expression is true then message is logged and 
+ * application is aborted. 
+ */
 #define ASSERT(expr)                                    \
     do {                                                \
         if (!(expr)) {                                  \
@@ -146,6 +148,9 @@ should be okay since likely always will have error logging enabled. */
         }                                               \
     } while (0)
 
+/* Does an assert and if expression returns false displays 
+ * error message and aborts application
+ */
 #define ASSERT_MSG(expr, msg)                                     \
     do {                                                          \
         if (!(expr)) {                                            \
@@ -154,6 +159,9 @@ should be okay since likely always will have error logging enabled. */
         }                                                         \
     } while (0)
 
+/* Does an assert and if expression returns false displays formatted
+ * error message and aborts application    
+ */
 #define ASSERT_FORMAT_MSG(expr, format, ...)                                 \
     do {                                                                     \
         if (!(expr)) {                                                       \
@@ -161,4 +169,15 @@ should be okay since likely always will have error logging enabled. */
             abort();                                                         \
         }                                                                    \
     } while (0)
-    
+
+/* For asserting that expression returns ESP_OK. If it does not then logs 
+ * message and aborts application
+ */
+#define ASSERT_OK(expr)                                                                      \
+    do {                                                                                     \
+        esp_err_t result = (expr);                                                           \
+        if (unlikely(result != ESP_OK)) {                                                    \
+            ERROR("Asserted at expression: %s Result: %s)", #expr, esp_err_to_name(result)); \
+            abort();                                                                         \
+        }                                                                                    \
+    } while (0)
